@@ -29,9 +29,8 @@ func main() {
 	// 内容发送给服务器
 	n, err := conn.Write([]byte(content))
 	if err != nil {
-		fmt.Println("send to server",err)
-		return
+		fmt.Println("客户端发送消息失败",err)
 	}
-	fmt.Println(n)
+	fmt.Printf("客户端发送了 %d 个字节数据\n",n)
 
 }
