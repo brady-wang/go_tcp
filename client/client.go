@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strings"
 )
 
 var (
@@ -21,16 +22,23 @@ func main() {
 	fmt.Println("conn success")
 	// 客户端准备发送单行数据 然后退出
 	reader := bufio.NewReader(os.Stdin) // 标准输入
-	content, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("read content error",err)
-		return
+	for{
+		content, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("read content error",err)
+			return
+		}
+		content = strings.Trim(content,"\r\n")
+		if content == "exit" {
+			fmt.Println("客户端退出")
+			break
+		}
+		// 内容发送给服务器
+		_, err = conn.Write([]byte(content+"\n"))
+		if err != nil {
+			fmt.Println("客户端发送消息失败",err)
+		}
 	}
-	// 内容发送给服务器
-	n, err := conn.Write([]byte(content))
-	if err != nil {
-		fmt.Println("客户端发送消息失败",err)
-	}
-	fmt.Printf("客户端发送了 %d 个字节数据\n",n)
+
 
 }
